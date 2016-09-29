@@ -9,6 +9,6 @@ setup(name='nsi_connections',
       description = ("Python daemon which exposes Geant BoD/NSI connection "
                                    "over HTTP/REST api."),
       keywords = 'Geant BoD NSI REST',
-      install_requires=['Flask', 'isodate', 'pytk'],
+      install_requires=['Flask', 'Flask-Autodoc', 'isodate', 'pytk'],
       include_package_data = True,
 )

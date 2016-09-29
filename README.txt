@@ -154,6 +154,7 @@ Jython, CXF are installed from the respective website.
 2.1.2 Python requirements
     - Jython 2.7.0 (http://www.jython.org)
     - Flask 1.10.1 (http://flask.pocoo.org)
+    - Flask-Autodoc 0.1.2 (https://github.com/acoomans/flask-autodoc)
     - isodate 0.5.4 (https://pypi.python.org/pypi/isodate)
     - pytz 2016.6.1 (http://pytz.sourceforge.net/)
     
