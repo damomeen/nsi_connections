@@ -30,27 +30,39 @@ This REST API can be more easily used by any applications or other services than
         Create a new data plane connection
         
         Data: connection attributes in JSON format:
-            - description: [string] description of a new connection (eg.: 'required by Microsoft Azure service 3232-4345')
-            - src_domain: [string] URN identifier of source domain (eg.: 'urn:ogf:network:pionier.net.pl:2013:topology')
-            - src_port: [string] identifier of the interface of source domain where connection must be terminated (eg.: 'felix-ge-1-0-9')
-            - src_vlan: [int] VLAN tag to be used on source port (eg.: 1202)
-            - dst_domain: [string] URN identifier of destination domain (eg.: urn:ogf:network:geant.net:2013:topology')
-            - dst_port: [string] identifier of the interface of destination domain where connection must be terminated (eg.: 'iMinds__port__to__GEANT')
-            - dst_vlan: [int] VLAN tag to be used on destination port (eg.: 2001)
+            - description: [string] description of a new connection 
+                        (eg.: 'required by Microsoft Azure service 3232-4345')
+            - src_domain: [string] URN identifier of source domain 
+                        (eg.: 'urn:ogf:network:pionier.net.pl:2013:topology')
+            - src_port: [string] identifier of the interface of source domain where connection must be terminated 
+                        (eg.: 'felix-ge-1-0-9')
+            - src_vlan: [int] VLAN tag to be used on source port 
+                        (eg.: 1202)
+            - dst_domain: [string] URN identifier of destination domain 
+                        (eg.: urn:ogf:network:geant.net:2013:topology')
+            - dst_port: [string] identifier of the interface of destination domain where connection must be 
+                        terminated  (eg.: 'iMinds__port__to__GEANT')
+            - dst_vlan: [int] VLAN tag to be used on destination port 
+                        (eg.: 2001)
             - capacity: [int] bandwidth which must be reserved for a new connection
-            - start_time: (optional) [string] date and time in any when connection should be provisioned, if missing then starts immediatelly (eg.: '2016-09-1T8:32:10+02:00') [See #1]
-            - end_time: (optional) [string] date and time in any when connection should be terminated, if missing then no termination planned (eg.: '2017-09-1T13:00:00+02:00') [See #1]
-            - explicit_routes: (optional) [list of strings] URN identifiers of STP ports taking part of the connection route
+            - start_time: (optional) [string] date and time in any when connection should be provisioned, 
+                        if missing then starts immediatelly (eg.: '2016-09-1T8:32:10+02:00') [See #1]
+            - end_time: (optional) [string] date and time in any when connection should be terminated, 
+                        if missing then no termination planned (eg.: '2017-09-1T13:00:00+02:00') [See #1]
+            - explicit_routes: (optional) [list of strings] URN identifiers of STP ports taking part 
+                        of the connection route
 
         #1 Date and time format must be formated in ISO 8601 date/time format. Examples:
             - 'yyyy-mm-ddThh:mm:ssZ'
             - 'yyyy-mm-ddThh:mm:ss+hh:mm'
             - 'yyyy-mm-ddThh:mm:ss-hh:mm'
-        During processing of date/time after calling this REST function is always translated from localtime zone to UTC timezone.
+        During processing of date/time after calling this REST function is always translated 
+        from localtime zone to UTC timezone.
         
         Returns:
             1. HTTP code 201 and JSON object containing one attribute
-                - reservation_id: [string] URN identifier of the reserved connection (eg.: 'urn:uuid:7ebc5196-9293-4346-b847-d2fa123b5266')
+                - reservation_id: [string] URN identifier of the reserved connection 
+                        (eg.: 'urn:uuid:7ebc5196-9293-4346-b847-d2fa123b5266')
             2. HTTP code 400 when incorrect connection attributes provided
             3. HTTP code 500 when a connection couldn't be reserved in the BoD system or other problem occured
     
@@ -59,7 +71,8 @@ This REST API can be more easily used by any applications or other services than
         Delete the connection or its reservation
         
         Parameters:
-            - reservation_id: [string] URN identifier of the reserved connection (eg.: 'urn:uuid:7ebc5196-9293-4346-b847-d2fa123b5266')
+            - reservation_id: [string] URN identifier of the reserved connection 
+                        (eg.: 'urn:uuid:7ebc5196-9293-4346-b847-d2fa123b5266')
             
         Returns:
             1. HTTP code 200 for all conditions
@@ -69,7 +82,8 @@ This REST API can be more easily used by any applications or other services than
         Query status of the connection or its reservation
         
         Parameters:
-            - reservation_id: [string] URN identifier of the reserved connection (eg.: 'urn:uuid:7ebc5196-9293-4346-b847-d2fa123b5266')
+            - reservation_id: [string] URN identifier of the reserved connection 
+                        (eg.: 'urn:uuid:7ebc5196-9293-4346-b847-d2fa123b5266')
             
         Returns:
             1. HTTP code 200 and JSON object containing status information about the connection:
@@ -77,11 +91,15 @@ This REST API can be more easily used by any applications or other services than
             - connectionId: [string] URN identifier of the reserved connection
             - description: [string] description of the connection
             - globalReservationId: [string] URN identifier used to correlate individually created connections
-            - lifecycleState: ["CREATED", "FAILED", "PASSED_END_TIME", "TERMINATING", "TERMINATED"] state values for the reservation lifecycle
+            - lifecycleState: ["CREATED", "FAILED", "PASSED_END_TIME", "TERMINATING", "TERMINATED"] 
+                        state values for the reservation lifecycle
             - notificationId: [int] identifier of the last notification send for given connection
-            - provisionState: ["RELEASED", "PROVISIONING", "PROVISIONED", "RELEASING"] state values for the data plane resources provisioning
+            - provisionState: ["RELEASED", "PROVISIONING", "PROVISIONED", "RELEASING"] 
+                        state values for the data plane resources provisioning
             - requesterNSA: [string] URN identifier of requester NSA
-            - reservationState: ["RESERVE_START", "RESERVE CHECKING", "RESERVE_FAILED", "RESERVE_ABORTING", "RESERVE_HELD", "RESERVE_COMMITTING", "RESERVE_TIMEOUT"] transitions of the reservation lifecycle
+            - reservationState: ["RESERVE_START", "RESERVE CHECKING", "RESERVE_FAILED", "RESERVE_ABORTING",
+                        "RESERVE_HELD", "RESERVE_COMMITTING", "RESERVE_TIMEOUT"] 
+                        transitions of the reservation lifecycle
             - version: [int] version of the reservation instantiated in the data plan
             - versionConsistent: ["true", "false"] consistency of reservation versions for NSI AG
             2. HTTP code 404 when connection was not found
@@ -108,7 +126,8 @@ Jython, CXF are installed from the respective website.
     - Apache CXF 2.7.10 (http://cxf.apache.org)
     
     1. Java SDK requires to set JAVA_HOME:
-        update-alternatives --config java (to check where installed if done automaticly; shows <jdk-install-dir>/bin/java)
+        update-alternatives --config java 
+        (to check where installed if done automaticly; shows <jdk-install-dir>/bin/java)
         
         root@debian:~# update-alternatives --config java
         There are 2 choices for the alternative java (providing /usr/bin/java).
@@ -120,7 +139,8 @@ Jython, CXF are installed from the respective website.
             2            /usr/lib/jvm/java-6-openjdk-amd64/jre/bin/java   1061      manual mode
 
 
-        export JAVA_HOME=<jdk-install-dir>  (example: /opt/java/jdk1.8.0_71)
+        export JAVA_HOME=<jdk-install-dir>  
+                    (eg.: /opt/java/jdk1.8.0_71)
         export PATH=$JAVA_HOME/bin:$PATH
 
     2. Apache CXF requires to set CXF_HOME:
@@ -165,8 +185,9 @@ Jython, CXF are installed from the respective website.
     
 2.3 Make your self-signed certificates for NSIv2 library:
     
-If you use SSL for NSI communication between your requester and NSI Provider Agent (PA) or NSI Aggragate (AG), you must prepare a SSL key for the provider server 
-to get replies from PA or AG. And you must truest the cert of NSI PA/GA. Please read java/clientapi/README for more details.
+If you use SSL for NSI communication between your requester and NSI Provider Agent (PA) or NSI Aggragate (AG), 
+you must prepare a SSL key for the provider server to get replies from PA or AG. 
+You must truest the cert of NSI PA/GA. Please read java/clientapi/README for more details.
     
     1. set your CA_DN_JKS, HOST_DN_JKS etc
         nano /opt/nsi2/java/clientapi/certs/Makefile
@@ -207,15 +228,16 @@ to get replies from PA or AG. And you must truest the cert of NSI PA/GA. Please 
         cd /opt/nsi2/java/clientapi
         jar uvf /opt/nsi2/java/clientapi/build/jar/nsi2_client.jar ./etc/nsi2.properties ./etc/ServerConfig.xml 
 
-    7. To connect to someone's NSI provider, you must send your /opt/nsi2/java/clientapi/certs/ca.cert to the admin
-        of the provider to append it in his/her trusted certificates.
+    7. To connect to someone's NSI provider, you must send your /opt/nsi2/java/clientapi/certs/ca.cert 
+        to the admin of the provider to append it in his/her trusted certificates.
 
     8. If you couldn't connect to a NSI provider because of certification errors
         (i.e. using a self-signed certificate etc.), you must add the certificate of 
         the provider (HTTPS server) like follows (HOSTNAME, PORT are configurable):
 
         cd /opt/nsi2/java/clientapi/certs
-        echo -n | openssl s_client -connect <HOSTNAME>:<PORT> | sed -ne '/-BEGIN CERTIFICATE-/,/-END CERTIFICATE-/p' > HOSTNAME.pem
+        echo -n | openssl s_client -connect <HOSTNAME>:<PORT> \
+                    | sed -ne '/-BEGIN CERTIFICATE-/,/-END CERTIFICATE-/p' > HOSTNAME.pem
         keytool -import -alias <HOSTNAME> -storepass changeit -noprompt -file HOSTNAME.pem -keystore trust.jks
         
         
