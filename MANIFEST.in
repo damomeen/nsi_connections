@@ -1,0 +1,7 @@
+recursive-include src *.java
+recursive-include etc *.example
+recursive-include etc *.properties
+recursive-include bin *.sh
+recursive-include test *
+recursive-include lib *
+recursive-include log *

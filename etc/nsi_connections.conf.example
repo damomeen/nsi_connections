@@ -1,0 +1,8 @@
+REST_PORT=9000
+LOG_FILE="../log/nsi_connections.log"
+
+PROVIDER_NSA = "urn:ogf:network:pionier.net.pl:2013:nsa"
+PROVIDER_URI="https://banana.man.poznan.pl:8091/nsi/ConnectionProvider"
+
+REQUESTER_NSA = "urn:ogf:network:pionier.net.pl:2013:nsa"
+REQUESTER_URI = "https://150.254.160.153:29081/nsi2_requester/services/ConnectionRequester"
