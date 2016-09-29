@@ -159,7 +159,7 @@ Jython, CXF are installed from the respective website.
     - pytz 2016.6.1 (http://pytz.sourceforge.net/)
     
     1. Install python libraries by pip:
-        pip install Flask isodate pytz
+        pip install Flask Flask-Autodoc isodate pytz
     
 
 2.2 Install NSIv2 client library
