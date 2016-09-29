@@ -34,8 +34,8 @@ This REST API can be more easily used by any applications or other services than
                         (eg.: 'required by Microsoft Azure service 3232-4345')
             - src_domain: [string] URN identifier of source domain 
                         (eg.: 'urn:ogf:network:pionier.net.pl:2013:topology')
-            - src_port: [string] identifier of the interface of source domain where connection must be terminated 
-                        (eg.: 'felix-ge-1-0-9')
+            - src_port: [string] identifier of the interface of source domain where connection 
+                        must be terminated (eg.: 'felix-ge-1-0-9')
             - src_vlan: [int] VLAN tag to be used on source port 
                         (eg.: 1202)
             - dst_domain: [string] URN identifier of destination domain 
@@ -52,7 +52,7 @@ This REST API can be more easily used by any applications or other services than
             - explicit_routes: (optional) [list of strings] URN identifiers of STP ports taking part 
                         of the connection route
 
-        #1 Date and time format must be formated in ISO 8601 date/time format. Examples:
+        #1) Date and time format must be formated in ISO 8601 date/time format. Examples:
             - 'yyyy-mm-ddThh:mm:ssZ'
             - 'yyyy-mm-ddThh:mm:ss+hh:mm'
             - 'yyyy-mm-ddThh:mm:ss-hh:mm'
@@ -87,21 +87,21 @@ This REST API can be more easily used by any applications or other services than
             
         Returns:
             1. HTTP code 200 and JSON object containing status information about the connection:
-            - active: ["false", "true"] is data plane for the connection provisioned (can traffic be send)
-            - connectionId: [string] URN identifier of the reserved connection
-            - description: [string] description of the connection
-            - globalReservationId: [string] URN identifier used to correlate individually created connections
-            - lifecycleState: ["CREATED", "FAILED", "PASSED_END_TIME", "TERMINATING", "TERMINATED"] 
-                        state values for the reservation lifecycle
-            - notificationId: [int] identifier of the last notification send for given connection
-            - provisionState: ["RELEASED", "PROVISIONING", "PROVISIONED", "RELEASING"] 
-                        state values for the data plane resources provisioning
-            - requesterNSA: [string] URN identifier of requester NSA
-            - reservationState: ["RESERVE_START", "RESERVE CHECKING", "RESERVE_FAILED", "RESERVE_ABORTING",
-                        "RESERVE_HELD", "RESERVE_COMMITTING", "RESERVE_TIMEOUT"] 
-                        transitions of the reservation lifecycle
-            - version: [int] version of the reservation instantiated in the data plan
-            - versionConsistent: ["true", "false"] consistency of reservation versions for NSI AG
+                - active: ["false", "true"] is data plane for the connection provisioned (can traffic be send)
+                - connectionId: [string] URN identifier of the reserved connection
+                - description: [string] description of the connection
+                - globalReservationId: [string] URN identifier used to correlate individually created connections
+                - lifecycleState: ["CREATED", "FAILED", "PASSED_END_TIME", "TERMINATING", "TERMINATED"] 
+                            state values for the reservation lifecycle
+                - notificationId: [int] identifier of the last notification send for given connection
+                - provisionState: ["RELEASED", "PROVISIONING", "PROVISIONED", "RELEASING"] 
+                            state values for the data plane resources provisioning
+                - requesterNSA: [string] URN identifier of requester NSA
+                - reservationState: ["RESERVE_START", "RESERVE CHECKING", "RESERVE_FAILED", "RESERVE_ABORTING",
+                            "RESERVE_HELD", "RESERVE_COMMITTING", "RESERVE_TIMEOUT"] 
+                            transitions of the reservation lifecycle
+                - version: [int] version of the reservation instantiated in the data plan
+                - versionConsistent: ["true", "false"] consistency of reservation versions for NSI AG
             2. HTTP code 404 when connection was not found
             3. HTTP code 500 when query request could not be sent to NSI API
 
