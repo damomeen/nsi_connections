@@ -286,3 +286,7 @@ Compilation and launching must be done always from ./bin
         cd ./test
         ./create_conn.sh
         ./delete_last_conn.sh
+        
+    6. Enable default TCP ports in the firewall:
+        - 9000: HTTP REST/API service
+        - 29081: NSIv2 SOAP ConnectionRequester service
