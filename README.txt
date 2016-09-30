@@ -241,14 +241,16 @@ You must truest the cert of NSI PA/GA. Please read java/clientapi/README for mor
                     | sed -ne '/-BEGIN CERTIFICATE-/,/-END CERTIFICATE-/p' > HOSTNAME.pem
         keytool -import -alias <HOSTNAME> -storepass changeit -noprompt -file HOSTNAME.pem -keystore trust.jks
         
-        
+2.4 Download 'nsi_connections' from github
+    
+    git clone https://github.com/damomeen/nsi_connections.git
+  
         
         
 3. Setup
 
     1. create configuration file from an example
-        From root of the project do
-        cd ./etc
+        cd ./nsi_connections/etc
         cp nsi_connections.conf.example nsi_connections.conf
         
     2. edit nsi_connections.conf
@@ -271,7 +273,7 @@ You must truest the cert of NSI PA/GA. Please read java/clientapi/README for mor
 Compilation and launching must be done always from ./bin
 
     1. compile java code
-        cd ./bin
+        cd ./nsi_connections/bin
         ./compile.sh
         
     2. run HTTP/REST service
@@ -284,7 +286,7 @@ Compilation and launching must be done always from ./bin
         http://localhost:9000/nsi/connections/doc
         
     5. make testing connections using REST API
-        cd ./test
+        cd ./nsi_connections/test
         ./create_conn.sh
         ./delete_last_conn.sh
         
