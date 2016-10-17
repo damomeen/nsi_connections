@@ -103,12 +103,14 @@ class NSI:
     def __init__(self, pNSA, pURI, rNSA, rURI):
         self.nsi = NSI2Interface(pNSA, pURI, rNSA, rURI, user, password)
 
-    def reserve(self, gid, desc, src, dst, srcvlan, dstvlan, capacity, start_sec, end_sec, eros):
-        rid = self.nsi.reserveCommit(gid, desc, src, dst, srcvlan, dstvlan, capacity, start_sec, end_sec, eros)
+    def reserve(self, params):
+        rid = self.nsi.reserveCommit(params['gid'], params['desc'], params['src'], params['dst'], 
+                                              params['srcvlan'], params['dstvlan'], params['capacity'], 
+                                              params['start_sec'], params['end_sec'], params['explicit_routes'])
         return rid
 
-    def modify(self, gid, desc, rid, ep_end):
-        mid = self.nsi.modifyCommit(gid, desc, rid, ep_end)
+    def modify(self, rid, params):
+        mid = self.nsi.modifyCommit(params['gid'], params['desc'], rid, params['ep_end'])
         return mid
 
     def commit(self, rid):

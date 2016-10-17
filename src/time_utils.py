@@ -22,7 +22,7 @@ def start_stop_time():
     epoch = datetime.utcfromtimestamp(0) 
     delta = start - epoch
     start_sec = int(delta.total_seconds()) +10 # setup 30 sec delay
-    end_sec = start_sec + 60*60*24*365 # Connection for 1 year
+    end_sec = start_sec + 60*60 # Connection for 1 hour
     return start_sec, end_sec
     
     

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-curl -v -X DELETE http://localhost:9000/nsi/connections/urn:uuid:7ebc5196-9293-4346-b847-d2fa123b5266
+curl -v -X DELETE http://localhost:9000/nsi/connections/urn:uuid:5f3d47d2-b201-4943-8606-7893d2dc246b
 
 
 

@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import logging, os
+import logging, os, time
 from logging.handlers import RotatingFileHandler
 from pprint import pformat
 
@@ -20,13 +20,12 @@ from flask import Flask, request, jsonify, abort
 from flask.ext.autodoc import Autodoc
 
 import nsi2interface
-from time_utils import time_constrains
-
+from attribute_utils import prepare_nsi_attributes
 
 #----------------------------------------------------------
 
 app = Flask(__name__)
-auto = Autodoc(app)
+auto = Autodoc(app)                                
 
 app.config.from_envvar('NSI_CONNECTIONS_SETTINGS')  # config file name declared in environment variable (see start script)
 
@@ -42,16 +41,18 @@ werkzeug_loggger.addHandler(handler)
 utils_loggger = logging.getLogger('time_utils')
 utils_loggger.addHandler(handler)
 
-LOGGER_INTRO = '\n'*3+'*'*80
-
 
 nsi = nsi2interface.NSI(app.config['PROVIDER_NSA'], app.config['PROVIDER_URI'], 
                                 app.config['REQUESTER_NSA'], app.config['REQUESTER_URI'])
 
-LAST_RESERVATION = None
-   
- #############################################################   
+LOGGER_INTRO = '\n'*3+'*'*80
 
+from tmf_service_activation_api import activation_api
+app.register_blueprint(activation_api)
+
+
+
+#----------------------------------------------
 @app.route("/nsi/connections", methods=['POST'])
 @auto.doc()
 def create_connection():
@@ -91,18 +92,7 @@ def create_connection():
         abort(400)
     
     try:
-        gid = "NSI-REST service"
-        desc = connAttributes['description']
-        sstp = "%(src_domain)s:%(src_port)s" %  connAttributes
-        dstp = "%(dst_domain)s:%(dst_port)s" %  connAttributes
-        svlan = int(connAttributes['src_vlan'])
-        dvlan = int(connAttributes['dst_vlan'])
-        capacity = int(connAttributes['capacity'])
-        start_time = connAttributes.get('start_time')
-        end_time = connAttributes.get('end_time')
-        explicit_routes = connAttributes.get('explicit_routes')
-        
-        start_sec, end_sec = time_constrains(start_time, end_time)
+        params = prepare_nsi_attributes(connAttributes)
     except:
         import traceback
         app.logger.error(traceback.format_exc())
@@ -110,7 +100,7 @@ def create_connection():
         abort(400)
         
     try:      
-        reservation_id = nsi.reserve(gid, desc, sstp, dstp, svlan, dvlan, capacity, start_sec, end_sec, explicit_routes)
+        reservation_id = nsi.reserve(params)
         app.logger.debug("reservation ID=" + reservation_id)
         
         if not reservation_id:
@@ -156,7 +146,7 @@ def delete_connection(reservation_id):
         app.logger.error(traceback.format_exc())
         
     app.logger.debug("Connection %s delated", reservation_id)
-    return "Connection %s deleted\n" % reservation_id, 200
+    return "Connection %s has been deleted\n" % reservation_id, 200
     
     
 #----------------------------------------------
@@ -228,12 +218,13 @@ def query_connection(reservation_id):
 def documentation():
     """Generates HTML documentation of exposed REST API"""
     return auto.html(title='NSI connections REST API documentation')
+   
     
  #############################################################   
 
 if __name__ == "__main__":
     app.logger.info("Running HTTP REST API on port %i", app.config['REST_PORT'])
-    app.run(port=app.config['REST_PORT'])
+    app.run(host="0.0.0.0", port=app.config['REST_PORT'])
 
     
 
