@@ -22,14 +22,17 @@ nsi_connections
     
 This REST API can be more easily used by any applications or other services than NSIv2 protocol itself.  
 
+'nsi_connections' implements TMF Activation and Configuration API v1.0:
+https://projects.tmforum.org/wiki/display/API/Open+API+Table
+
 
 1.1 REST API specification
 
-    1. POST /nsi/connections
+    1. POST /api/activation/service
     
         Create a new data plane connection
         
-        Data: connection attributes in JSON format:
+        Data:  service request in JSON format containing attributes in 'serviceCharacteristic' field:
             - description: [string] description of a new connection 
                         (eg.: 'required by Microsoft Azure service 3232-4345')
             - src_domain: [string] URN identifier of source domain 
@@ -60,33 +63,33 @@ This REST API can be more easily used by any applications or other services than
         from localtime zone to UTC timezone.
         
         Returns:
-            1. HTTP code 201 and JSON object containing one attribute
-                - reservation_id: [string] URN identifier of the reserved connection 
+            1. HTTP code 201 and JSON object being a copy of service request plus a new attribute:
+                - service_id: [string] URN identifier of the reserved connection 
                         (eg.: 'urn:uuid:7ebc5196-9293-4346-b847-d2fa123b5266')
             2. HTTP code 400 when incorrect connection attributes provided
             3. HTTP code 500 when a connection couldn't be reserved in the BoD system or other problem occured
     
-    2. DELETE /nsi/connections/<reservation_id>
+    2. DELETE /api/activation/service/<service_id>
     
         Delete the connection or its reservation
         
         Parameters:
-            - reservation_id: [string] URN identifier of the reserved connection 
+            - service_id: [string] URN identifier of the reserved connection 
                         (eg.: 'urn:uuid:7ebc5196-9293-4346-b847-d2fa123b5266')
             
         Returns:
             1. HTTP code 200 for all conditions
 
-    3. GET /nsi/connections/<reservation_id> 
+    3. GET /api/activation/service/<service_id> 
     
         Query status of the connection or its reservation
         
         Parameters:
-            - reservation_id: [string] URN identifier of the reserved connection 
+            - service_id: [string] URN identifier of the reserved connection 
                         (eg.: 'urn:uuid:7ebc5196-9293-4346-b847-d2fa123b5266')
             
         Returns:
-            1. HTTP code 200 and JSON object containing status information about the connection:
+            1. HTTP code 200 and JSON object containing service information stored in 'serviceCharacteristic' field:
                 - active: ["false", "true"] is data plane for the connection provisioned (can traffic be send)
                 - connectionId: [string] URN identifier of the reserved connection
                 - description: [string] description of the connection
@@ -105,7 +108,7 @@ This REST API can be more easily used by any applications or other services than
             2. HTTP code 404 when connection was not found
             3. HTTP code 500 when query request could not be sent to NSI API
 
-    4. GET /nsi/connections/doc 
+    4. GET /doc 
     
         Generates HTML documentation of exposed REST API
         
@@ -198,6 +201,10 @@ You must truest the cert of NSI PA/GA. Please read java/clientapi/README for mor
         
     2. get CA certificate from NSI AG administrator and put that certificate as ag-ca.cert
         cp <reseived-ca-cert> /opt/nsi2/java/client/certs/ag-ca.cert
+        
+        That certificate will be added to trust.jks by following command:
+        keytool -importcert -noprompt -trustcacerts -file <name of received CA cert> -alias <choose a name> -keystore trust.jks -storepass changeit 
+        You can use it to add more certs if required.
 
     2. make the certificate of your dummy CA
         cd /opt/nsi2/java/clientapi/certs

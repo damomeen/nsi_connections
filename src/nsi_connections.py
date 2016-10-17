@@ -213,7 +213,7 @@ def query_connection(reservation_id):
     return jsonify(status)
     
 #----------------------------------------------    
-@app.route('/nsi/connections/doc')
+@app.route('/doc')
 @auto.doc()
 def documentation():
     """Generates HTML documentation of exposed REST API"""
