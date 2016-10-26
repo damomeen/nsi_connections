@@ -11,40 +11,91 @@ LAST_RESERVATION = None
 
 LOGGER_INTRO = '\n'*3+'*'*80
 
-from nsi_connections import nsi, auto
+from nsi_connections import nsi
                                 
 
 #----------------------------------------------
 
 @activation_api.route("/api/activation/service", methods=['POST'])
-@auto.doc()
 def create_service():
-    """Create a new data plane connection following TMF service activation API.
-    
-    Data:  service request in JSON format containing attributes in 'serviceCharacteristic' field:
-        - description:  [string] description of a new connection (eg.: 'required by Microsoft Azure service 3232-4345')
-        - src_domain: [string] URN identifier of source domain (eg.: 'urn:ogf:network:pionier.net.pl:2013:topology')
-        - src_port: [string] identifier of the interface of source domain where connection must be terminated (eg.: 'felix-ge-1-0-9')
-        - src_vlan: [int] VLAN tag to be used on source port (eg.: 1202)
-        - dst_domain: [string] URN identifier of destination domain (eg.: urn:ogf:network:geant.net:2013:topology')
-        - dst_port: [string] identifier of the interface of destination domain where connection must be terminated (eg.: 'iMinds__port__to__GEANT')
-        - dst_vlan: [int] VLAN tag to be used on destination port (eg.: 2001)
-        - capacity: [int] bandwidth which must be reserved for a new connection
-        - start_time: (optional) [string] date and time in any when connection should be provisioned, if missing then starts immediatelly (eg.: '2016-09-1T8:32:10+02:00') [See #1]
-        - end_time: (optional) [string] date and time in any when connection should be terminated, if missing then no termination planned (eg.: '2017-09-1T13:00:00+02:00') [See #1]
-        - explicit_routes: (optional) [list of strings] URN identifiers of STP ports taking part of the connection route 
-        
-        #1 Date and time format must be formated in ISO 8601 date/time format. Examples: 
-            - 'yyyy-mm-ddThh:mm:ssZ'
-            - 'yyyy-mm-ddThh:mm:ss+hh:mm'  
-            - 'yyyy-mm-ddThh:mm:ss-hh:mm'
-            During processing of date/time after calling this REST function is always translated from localtime zone to UTC timezone. 
-            
-    Returns: 
-        1. HTTP code 201 and JSON object being a copy of service request plus a new attribute:
-            - service_id: [string] URN identifier of the reserved connection (eg.: 'urn:uuid:7ebc5196-9293-4346-b847-d2fa123b5266')
-        2. HTTP code 400 when incorrect connection attributes provided
-        3. HTTP code 500 when a connection couldn't be reserved in the BoD system or other problem occured
+    """
+    Create a new data plane connection
+    ---
+    tags:
+        -   NSI connections
+    parameters:
+        -   in: body
+            name: body
+            description: NSI service request attributes
+            schema:
+                id: ConnProperties
+                properties:
+                    serviceCharacteristic:
+                        id: ConnAttributes
+                        desciption: requested connection attributes
+                        properties:
+                            description:  
+                                type: string
+                                description: description of a new connection
+                                required: true
+                            src_domain:
+                                type: string
+                                description: URN identifier of source domain, example urn:ogf:network:pionier.net.pl:2013:topology
+                                required: true
+                            src_port:
+                                type: string
+                                description: identifier of the interface of source domain where connection must be terminated
+                                required: true
+                            src_vlan:
+                                type: integer
+                                description: VLAN tag to be used on source port
+                                required: true
+                            dst_domain:
+                                type: string
+                                description: URN identifier of destination domain, example urn:ogf:network:geant.net:2013:topology
+                                required: true
+                            dst_port:
+                                type: string
+                                description: identifier of the interface of destination domain where connection must be terminated
+                                required: true
+                            dst_vlan: 
+                                type: integer
+                                description: VLAN tag to be used on destination port
+                                required: true   
+                            capacity:
+                                type: integer
+                                description: bandwidth which must be reserved for a new connection
+                                required: true 
+                            start_time:
+                                type: string
+                                description: date and time in any when connection should be provisioned, if missing then starts immediatelly, example 2016-09-1T8:32:10+02:00
+                                required: false                     
+                            end_time:
+                                type: string
+                                description: date and time in any when connection should be terminated, if missing then no termination planned, example 2016-09-1T8:32:10+02:00
+                                required: false 
+                            explicit_routes:
+                                type: array
+                                description: list of port taking part of the connection route
+                                items:
+                                    type: string
+                                    description: URN identifier of ports
+                                    required: false 
+    responses:
+        201:
+            description: NSI connection succesfully reserved
+            schema:
+                id: ConnCreationResp
+                properties:
+                    service_id: 
+                        type: string
+                        description: URN identifier of the reserved connection, example urn:uuid:7ebc5196-9293-4346-b847-d2fa123b5266
+                    serviceCharacteristic:
+                        $ref: '#/definitions/ConnAttributes'
+        400:
+            description: incorrect connection attributes provided
+        500:
+            description: connection couldn't be reserved in the BoD system or other problem occured
     """
     app.logger.debug(LOGGER_INTRO)
     
@@ -97,15 +148,19 @@ def create_service():
 #----------------------------------------------    
     
 @activation_api.route("/api/activation/service/<service_id>", methods=['DELETE'])
-@auto.doc()
 def delete_service(service_id):
-    """Delete the connection or its reservation
-    
-    Arguments:
-        - service_id: [string] URN identifier of the reserved connection (eg.: 'urn:uuid:7ebc5196-9293-4346-b847-d2fa123b5266')
-        
-    Returns:
-        1. HTTP code 200 for all conditions
+    """
+    Delete the connection or its reservation
+    ---
+    tags:
+        -   NSI connections
+    parameters:
+        -   name: service_id
+            type: string
+            description: URN identifier of the reserved connection, example urn:uuid:7ebc5196-9293-4346-b847-d2fa123b5266
+    responses:
+        200:
+            description: deletion was performed
     """
     app.logger.debug(LOGGER_INTRO)
     reservation_id = service_id
@@ -124,28 +179,77 @@ def delete_service(service_id):
 #----------------------------------------------    
     
 @activation_api.route("/api/activation/service/<service_id>", methods=['GET'])
-@auto.doc()
 def get_service(service_id):
-    """Query status of the connection or its reservation
-    
-    Arguments:
-        - service_id: [string] URN identifier of the reserved connection (eg.: 'urn:uuid:7ebc5196-9293-4346-b847-d2fa123b5266')
-        
-    Returns:
-        1. HTTP code 200 and JSON object containing service information stored in 'serviceCharacteristic' field:
-            - active: ["false", "true"] is data plane for the connection provisioned (can traffic be send)
-            - connectionId: [string] URN identifier of the reserved connection
-            - description:  [string] description of the connection 
-            - globalReservationId: [string] URN identifier used to correlate individually created connections
-            - lifecycleState: ["CREATED", "FAILED", "PASSED_END_TIME", "TERMINATING", "TERMINATED"] state values for the reservation lifecycle
-            - notificationId: [int] identifier of the last notification send for given connection
-            - provisionState: ["RELEASED", "PROVISIONING", "PROVISIONED", "RELEASING"] state values for the data plane resources provisioning
-            - requesterNSA: [string] URN identifier of requester NSA
-            - reservationState: ["RESERVE_START", "RESERVE CHECKING", "RESERVE_FAILED", "RESERVE_ABORTING", "RESERVE_HELD", "RESERVE_COMMITTING", "RESERVE_TIMEOUT"] transitions of the reservation lifecycle
-            - version: [int] version of the reservation instantiated in the data plan
-            - versionConsistent:  ["true", "false"] consistency of reservation versions for NSI AG
-        2. HTTP code 404 when connection was not found 
-        3. HTTP code 500 when query request could not be sent to NSI API
+    """
+    Query status of the connection or its reservation
+    ---
+    tags:
+        -   NSI connections
+    parameters:
+        -   name: service_id
+            type: string
+            description: URN identifier of the reserved connection, example urn:uuid:7ebc5196-9293-4346-b847-d2fa123b5266
+    responses:
+        200:
+            description: NSI service found
+            schema:
+                properties:
+                    serviceCharacteristic:
+                        id: ConnStatus
+                        properties:
+                            active:
+                                type: string
+                                description: true if data plane for the connection provisioned and can traffic be send
+                                default: [false', 'true'] 
+                                required: true
+                            connectionId:
+                                type: string
+                                description: URN identifier of the reserved connection
+                                required: true
+                            description:
+                                type: string
+                                description: description of the connection 
+                                required: true
+                            globalReservationId:
+                                type: string
+                                description: URN identifier used to correlate individually created connections 
+                                required: true
+                            lifecycleState:
+                                type: string
+                                description: state values for the reservation lifecycle
+                                default: ['CREATED', 'FAILED', 'PASSED_END_TIME', 'TERMINATING', 'TERMINATED'] 
+                                required: true
+                            notificationId:
+                                type: integer
+                                description: identifier of the last notification send for given connection
+                                required: true
+                            provisionState:
+                                type: string
+                                description: state values for the data plane resources provisioning
+                                default: ['RELEASED', 'PROVISIONING', 'PROVISIONED', 'RELEASING']
+                                required: true
+                            requesterNSA:
+                                type: string
+                                description: URN identifier of requester NSA 
+                                required: true
+                            reservationState:
+                                type: string
+                                description: transitions of the reservation lifecycle
+                                default: ['RESERVE_START', 'RESERVE CHECKING', 'RESERVE_FAILED', 'RESERVE_ABORTING', 'RESERVE_HELD', 'RESERVE_COMMITTING', 'RESERVE_TIMEOUT']
+                                required: true
+                            version:
+                                type: integer
+                                description:  version of the reservation instantiated in the data plan
+                                required: true
+                            versionConsistent:
+                                type: string
+                                description: consistency of reservation versions for NSI AG
+                                default: ['false', 'true']
+                                required: true
+        404: 
+            description: connection was not found 
+        500:
+            description: query request could not be sent to NSI API
     """
     app.logger.debug(LOGGER_INTRO)
     reservation_id = service_id

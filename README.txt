@@ -108,10 +108,7 @@ https://projects.tmforum.org/wiki/display/API/Open+API+Table
             2. HTTP code 404 when connection was not found
             3. HTTP code 500 when query request could not be sent to NSI API
 
-    4. GET /doc 
-    
-        Generates HTML documentation of exposed REST API
-        
+       
         
         
         
@@ -157,12 +154,12 @@ Jython, CXF are installed from the respective website.
 2.1.2 Python requirements
     - Jython 2.7.0 (http://www.jython.org)
     - Flask 1.10.1 (http://flask.pocoo.org)
-    - Flask-Autodoc 0.1.2 (https://github.com/acoomans/flask-autodoc)
+    - flasgger 0.5.2 (https://github.com/rochacbruno/flasgger)
     - isodate 0.5.4 (https://pypi.python.org/pypi/isodate)
     - pytz 2016.6.1 (http://pytz.sourceforge.net/)
     
     1. Install python libraries by pip:
-        pip install Flask Flask-Autodoc isodate pytz
+        pip install Flask flasgger isodate pytz
     
 
 2.2 Install NSIv2 client library
@@ -289,8 +286,8 @@ Compilation and launching must be done always from ./bin
     3. check logging entries
         tail -f ../log/nsi_connections.log
         
-    4. check REST API documentation in web browser:
-        http://localhost:9000/nsi/connections/doc
+    4. check Swagger API documentation in web browser:
+        http://150.254.160.153:9000/apidocs/index.html
         
     5. make testing connections using REST API
         cd ./nsi_connections/test

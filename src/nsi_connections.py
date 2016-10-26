@@ -17,7 +17,7 @@ from logging.handlers import RotatingFileHandler
 from pprint import pformat
 
 from flask import Flask, request, jsonify, abort
-from flask.ext.autodoc import Autodoc
+from flasgger import Swagger
 
 import nsi2interface
 from attribute_utils import prepare_nsi_attributes
@@ -25,7 +25,7 @@ from attribute_utils import prepare_nsi_attributes
 #----------------------------------------------------------
 
 app = Flask(__name__)
-auto = Autodoc(app)                                
+Swagger(app)                               
 
 app.config.from_envvar('NSI_CONNECTIONS_SETTINGS')  # config file name declared in environment variable (see start script)
 
@@ -54,7 +54,6 @@ app.register_blueprint(activation_api)
 
 #----------------------------------------------
 @app.route("/nsi/connections", methods=['POST'])
-@auto.doc()
 def create_connection():
     """Create a new data plane connection
     
@@ -125,7 +124,6 @@ def create_connection():
 #----------------------------------------------
     
 @app.route("/nsi/connections/<reservation_id>", methods=['DELETE'])
-@auto.doc()
 def delete_connection(reservation_id):
     """Delete the connection or its reservation
     
@@ -171,7 +169,6 @@ def delete_last_connection():
 #----------------------------------------------
 
 @app.route("/nsi/connections/<reservation_id>", methods=['GET'])
-@auto.doc()
 def query_connection(reservation_id):
     """Query status of the connection or its reservation
     
@@ -211,13 +208,6 @@ def query_connection(reservation_id):
         
     app.logger.debug("Connection status is \n%s", pformat(status))
     return jsonify(status)
-    
-#----------------------------------------------    
-@app.route('/doc')
-@auto.doc()
-def documentation():
-    """Generates HTML documentation of exposed REST API"""
-    return auto.html(title='NSI connections REST API documentation')
    
     
  #############################################################   
