@@ -33,7 +33,6 @@ def create_service():
                     serviceCharacteristic:
                         id: ConnAttributes
                         desciption: requested connection attributes
-                        properties:
                             description:  
                                 type: string
                                 description: description of a new connection
@@ -112,7 +111,8 @@ def create_service():
         abort(400)
     
     try:
-        connAttributes = characterstics2attributes(connAttributes)
+        if type(connAttributes) == list:
+            connAttributes = characterstics2attributes(connAttributes)
         params = prepare_nsi_attributes(connAttributes)
     except:
         import traceback
@@ -121,14 +121,14 @@ def create_service():
         abort(400)
         
     try:      
-        reservation_id = nsi.reserve(params)
+        reservation_id = 'urn:uuid:5f3d47d2-b201-4943-8606-7893d2dc246b' #nsi.reserve(params)
         app.logger.debug("reservation ID=" + reservation_id)
         
         if not reservation_id:
             app.logger.error("Couldn't reserve the connection. Responging HTTP code: 500")
             abort(500)
 
-        nsi.provision(reservation_id)
+        #nsi.provision(reservation_id)
         
         app.logger.debug("Connection %s created" % reservation_id)
         
@@ -167,8 +167,9 @@ def delete_service(service_id):
     app.logger.info("Deleting connection %s", reservation_id)
     
     try:
-        nsi.release(reservation_id)
-        nsi.terminate(reservation_id)
+        pass
+        #~ nsi.release(reservation_id)
+        #~ nsi.terminate(reservation_id)
     except:
         import traceback
         app.logger.error(traceback.format_exc())
