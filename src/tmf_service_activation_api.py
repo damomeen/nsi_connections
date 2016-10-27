@@ -33,6 +33,7 @@ def create_service():
                     serviceCharacteristic:
                         id: ConnAttributes
                         desciption: requested connection attributes
+                        properties:
                             description:  
                                 type: string
                                 description: description of a new connection
