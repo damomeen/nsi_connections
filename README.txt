@@ -287,7 +287,7 @@ Compilation and launching must be done always from ./bin
         tail -f ../log/nsi_connections.log
         
     4. check Swagger API documentation in web browser:
-        http://150.254.160.153:9000/apidocs/index.html
+        http://localhost:9000/apidocs/index.html
         
     5. make testing connections using REST API
         cd ./nsi_connections/test
