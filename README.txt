@@ -165,10 +165,10 @@ Jython, CXF are installed from the respective website.
 2.2 Install NSIv2 client library
 
     1. extract NSIv2 code
-        tar zxvf ./lib/aist-nsi2-20150910.tar.gz /opt/
+        tar zxvf ./lib/aist-nsi2.tar.gz /opt/
     2. setting nsi2
         cd /opt
-        ln -s aist-nsi2-20150910 nsi2
+        ln -s aist-nsi2 nsi2
     3. compile nsi2/java/common
         cd /opt/nsi2/java/common
         ant clean; ant
@@ -196,8 +196,8 @@ You must truest the cert of NSI PA/GA. Please read java/clientapi/README for mor
         CN of CA_DN_JKS can be any text you want, but CN of HOST_DN_JKS
         must be the correct (global) IP address or hostname of your host.
         
-    2. get CA certificate from NSI AG administrator and put that certificate as ag-ca.cert
-        cp <reseived-ca-cert> /opt/nsi2/java/client/certs/ag-ca.cert
+    2. get CA certificate from NSI Provider Agent administrator and put that certificate as pa-ca.cert
+        cp <reseived-ca-cert> /opt/nsi2/java/client/certs/pa-ca.cert
         
         That certificate will be added to trust.jks by following command:
         keytool -importcert -noprompt -trustcacerts -file <name of received CA cert> -alias <choose a name> -keystore trust.jks -storepass changeit 
@@ -216,7 +216,7 @@ You must truest the cert of NSI PA/GA. Please read java/clientapi/README for mor
         host.jks : JKS format of host.cert
         host.certreq: certification request file (can be removed)
         trust.jks : trusted certificates
-        ag-ca.cert : PA or AG CA certificate 
+        pa-ca.cert : PA or AG CA certificate 
  
     4. check and fix absolute paths and passwords in config files /opt/nsi2/java/clientapi/etc
         nano /opt/nsi2/java/clientapi/etc/nsi2.properties 
@@ -234,6 +234,7 @@ You must truest the cert of NSI PA/GA. Please read java/clientapi/README for mor
         jar uvf /opt/nsi2/java/clientapi/build/jar/nsi2_client.jar ./etc/nsi2.properties ./etc/ServerConfig.xml 
 
     7. To connect to someone's NSI provider, you must send your /opt/nsi2/java/clientapi/certs/ca.cert 
+        and /opt/nsi2/java/clientapi/certs/host.cert 
         to the admin of the provider to append it in his/her trusted certificates.
 
     8. If you couldn't connect to a NSI provider because of certification errors
